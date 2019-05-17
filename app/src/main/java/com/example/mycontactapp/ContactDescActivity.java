@@ -6,6 +6,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+import java.util.Objects;
+
 public class ContactDescActivity extends AppCompatActivity {
 
     Toolbar toolbar;
@@ -15,14 +17,13 @@ public class ContactDescActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_description);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar_act_2);
+        toolbar = findViewById(R.id.toolbar_act_2);
         setSupportActionBar(toolbar);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
     }
-
 
 
     @Override

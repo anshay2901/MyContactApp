@@ -8,26 +8,29 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.mycontactapp.ContactDescActivity;
+import com.example.mycontactapp.ContactsActivity;
 import com.example.mycontactapp.R;
 import com.example.mycontactapp.models.ModelContacts;
 
 import java.util.List;
 
-public class ContactRecyclerAdapter extends RecyclerView.Adapter <ContactRecyclerAdapter.ViewHolder>{
+public class ContactRecyclerAdapter extends RecyclerView.Adapter<ContactRecyclerAdapter.ViewHolder> {
 
+    private View.OnClickListener onClickListener;
     private Context mContext;
     private LayoutInflater inflater;
     private List<ModelContacts> mContactsList;
-    private OnContactClickListener mOnContactClickListener;
 
-    public ContactRecyclerAdapter(Context context, List<ModelContacts> contactsLists, OnContactClickListener mOnContactClickListener) {
+    public ContactRecyclerAdapter(Context context, List<ModelContacts> contactsLists) {
 
         mContactsList = contactsLists;
         mContext = context;
-        mOnContactClickListener = mOnContactClickListener;
 
     }
 
@@ -37,9 +40,9 @@ public class ContactRecyclerAdapter extends RecyclerView.Adapter <ContactRecycle
 
         inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(R.layout.item_contact_list, viewGroup, false);
-        ViewHolder viewHolder = new ViewHolder(view, mOnContactClickListener);
+        ViewHolder viewHolder = new ViewHolder(mContext, view);
 
-        return new ViewHolder(view, mOnContactClickListener);
+        return new ViewHolder(mContext, view);
     }
 
     @Override
@@ -55,9 +58,8 @@ public class ContactRecyclerAdapter extends RecyclerView.Adapter <ContactRecycle
 
 
 
-
-
     }
+
 
     @Override
     public int getItemCount() {
@@ -67,31 +69,47 @@ public class ContactRecyclerAdapter extends RecyclerView.Adapter <ContactRecycle
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView contact_name, contact_phone;
-        OnContactClickListener onContactClickListener;
+        private Context context;
 
-        public ViewHolder(@NonNull View itemView, OnContactClickListener onContactClickListener) {
+
+        public ViewHolder(Context context, @NonNull View itemView) {
             super(itemView);
 
             contact_name = itemView.findViewById(R.id.contact_name);
             contact_phone = itemView.findViewById(R.id.contact_phone);
-            this.onContactClickListener = onContactClickListener;
+            LinearLayout linearLayout = itemView.findViewById(R.id.item_linear_layout);
 
+            this.context = context;
 
-            itemView.setOnClickListener(this);
-
-
+            linearLayout.setOnClickListener(this);
         }
+
 
         @Override
         public void onClick(View v) {
 
-            //onContactClickListener.onContactClick(getAdapterPosition());
+            int position = getLayoutPosition();
+
+            Intent intent = new Intent(v.getContext(), ContactDescActivity.class);
+
+            class OpenIntent extends ContactsActivity {
+
+                @Override
+                public void startActivity(Intent intent) {
+                    //super.startActivity(intent);
+                    pleaseWork(getAdapterPosition());
+                    Log.d("test", "test" + getAdapterPosition());
+                }
+            }
+
+            OpenIntent openIntent = new OpenIntent();
+
+            openIntent.startActivity(intent);
+
+
+
 
         }
     }
-
-    public interface OnContactClickListener {
-        void onContactClick(int position);
-    }
-
 }
+

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,9 +20,10 @@ import com.example.mycontactapp.models.ModelContacts;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ContactsActivity extends AppCompatActivity implements ContactRecyclerAdapter.OnContactClickListener {
+public class ContactsActivity extends AppCompatActivity {
 
     private View v;
+    ConstraintLayout constraintLayout;
     private RecyclerView recyclerView;
     List<ModelContacts> list;
 
@@ -34,20 +36,22 @@ public class ContactsActivity extends AppCompatActivity implements ContactRecycl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_list);
 
+        constraintLayout = findViewById(R.id.contact_list_cl);
+        v = constraintLayout;
+
         recyclerView = findViewById(R.id.recyclerView);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         RecyclerView.LayoutManager layoutManager = linearLayoutManager;
         recyclerView.setLayoutManager(layoutManager);
 
-        ContactRecyclerAdapter adapter = new ContactRecyclerAdapter(getApplicationContext(), getContacts(), this);
+        ContactRecyclerAdapter adapter = new ContactRecyclerAdapter(getApplicationContext(), getContacts());
 
         recyclerView.setAdapter(adapter);
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
                 getRequestedOrientation());
         recyclerView.addItemDecoration(dividerItemDecoration);
-
 
 
     }
@@ -58,6 +62,7 @@ public class ContactsActivity extends AppCompatActivity implements ContactRecycl
         Cursor cursor = getApplicationContext().getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
             null, null, ContactsContract.Contacts.DISPLAY_NAME+ " ASC");
 
+        assert cursor != null;
         cursor.moveToFirst();
 
         while (cursor.moveToNext()) {
@@ -66,15 +71,13 @@ public class ContactsActivity extends AppCompatActivity implements ContactRecycl
                     )), cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER
                     )), cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS
                     )), cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Photo.PHOTO_THUMBNAIL_URI))));
-
         }
 
         return list;
     }
 
-    @Override
-    public void onContactClick(int position) {
-        list.get(position);
+    public void pleaseWork(int position) {
+
         Intent intent = new Intent(getApplicationContext(), ContactDescActivity.class);
         startActivity(intent);
     }
